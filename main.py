@@ -1,6 +1,24 @@
 import argparse
 
 
+def validate_amount(amount):
+    """
+
+    :param amount:
+    :return:
+    """
+    return 0.0
+
+
+def validate_currency(currency):
+    """
+
+    :param currency:
+    :return:
+    """
+    return " "
+
+
 def parse_args():
 
     """
