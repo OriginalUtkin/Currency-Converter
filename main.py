@@ -10,13 +10,14 @@ def parse_args():
 
     parser = argparse.ArgumentParser(description="Process input arguments for currency converter")
 
-    parser.add_argument('--amount', help="Converting amount. Should be a number value", default=1, type=float)
+    parser.add_argument('--amount', help="Converting amount. Should be a number value. If this parameter is missing"
+                                         ", program will set this value to 1", default=1, type=float)
 
-    parser.add_argument('--input_currency', help="Input currency for converting.Should be represented by 3 letters "
+    parser.add_argument('--input_currency', help="Input currency for converting. Should be represented by 3 letters "
                                                  "name or currency symbol", required=True)
 
     parser.add_argument('--output_currency', help="Output currency. 3 letters or currency symbol."
-                                                  "If this parameter is missing program will convert "
+                                                  "If this parameter is missing, program will convert "
                                                   "to all known currencies.")
 
     return vars(parser.parse_args())
