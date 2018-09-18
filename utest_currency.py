@@ -5,6 +5,9 @@ from main import validate_currency
 
 class ValidatingCurrencyTest(unittest.TestCase):
 
+    def test_return(self):
+        self.assertEqual("CzK", "CZK")
+
     def test_length(self):
         with self.assertRaises(argparse.ArgumentError):
             validate_currency("CZKU")
