@@ -1,5 +1,7 @@
 import argparse
 import math
+import urllib.request
+import json
 
 
 def validate_amount(amount):
@@ -29,11 +31,45 @@ def validate_amount(amount):
 
 def validate_currency(currency):
     """
-
+    Validate input and output currency symbol or 3 letters name
     :param currency:
+    :return: char symbol or currency name in uppercase
+    """
+    currencyID = currency.upper()
+
+    if len(currency) > 3:
+        raise argparse.ArgumentTypeError("Input or output currency has a wrong format. Type currency  symbol or "
+                                         "3 letters name.")
+
+    with urllib.request.urlopen("https://free.currencyconverterapi.com/api/v6/currencies") as allCurrencies:
+        json_data = json.load(allCurrencies)
+
+        # Check if currency id exists
+        if len(currency) == 3 and currencyID not in json_data['results']:
+            raise argparse.ArgumentTypeError("Wrong input or output currency name")
+
+        # Check if currency symbol exists
+        else:
+            pass
+
+    return " "
+
+
+def get_symbols_set(all_currencies):
+    """
+
+    :param all_currencies:
     :return:
     """
-    return " "
+    result = set()
+
+    for value in all_currencies.values():
+        for kk,vv in value.items():
+            try:
+                result.append(vv['currencySymbol'])
+            except KeyError:
+                continue
+    return result
 
 
 def parse_args():
@@ -49,7 +85,7 @@ def parse_args():
                                          ", program will set this value to 1", default=1, type=validate_amount)
 
     parser.add_argument('--input_currency', help="Input currency for converting. Should be represented by 3 letters "
-                                                 "name or currency symbol", required=True)
+                                                 "name or currency symbol", required=True, type=validate_currency)
 
     parser.add_argument('--output_currency', help="Output currency. 3 letters or currency symbol."
                                                   "If this parameter is missing, program will convert "
