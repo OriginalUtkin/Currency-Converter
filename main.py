@@ -37,25 +37,34 @@ def validate_currency(currency):
     """
     currencyID = currency.upper()
 
+
+
     if len(currency) > 3:
         raise argparse.ArgumentTypeError("Input or output currency has a wrong format. Type currency  symbol or "
                                          "3 letters name.")
+
 
     with urllib.request.urlopen("https://free.currencyconverterapi.com/api/v6/currencies") as allCurrencies:
         json_data = json.load(allCurrencies)
 
         # Check if currency id exists
-        if len(currency) == 3 and currencyID not in json_data['results']:
-            raise argparse.ArgumentTypeError("Wrong input or output currency name")
+        if len(currency) == 3:
+            print(get_symbols_set(json_data))
+
+            if currencyID not in json_data['results']:
+                raise argparse.ArgumentTypeError("Wrong input or output currency name")
+            else:
+                return currencyID
 
         # Check if currency symbol exists
         else:
+
             pass
 
-    return " "
+    return currency
 
 
-def get_symbols_set(all_currencies):
+def get_symbols_set(json_data):
     """
 
     :param all_currencies:
@@ -63,13 +72,14 @@ def get_symbols_set(all_currencies):
     """
     result = set()
 
-    for value in all_currencies.values():
-        for kk,vv in value.items():
+    for currency in json_data.values():
+        for currency_info in currency.items():
             try:
-                result.append(vv['currencySymbol'])
+                result.append(currency_info['currencySymbol'])
             except KeyError:
                 continue
-    return result
+                
+    return set(result)
 
 
 def parse_args():
