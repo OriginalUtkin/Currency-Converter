@@ -10,16 +10,10 @@ def get_all_symbols(json_data):
     :param all_currencies:
     :return:
     """
-    result = dict()
 
     for currency in json_data.values():
-        for currency_info in currency.values():
-            if (currency_info.get('currencySymbol') is not None) and \
-               (currency_info['currencySymbol'] not in result.values()):
-                result[currency_info['id']] = currency_info.get('currencySymbol')
-
-    return result
-
+        return {currency_info['id']: currency_info.get('currencySymbol') for currency_info in
+                currency.values() if currency_info.get('currencySymbol') is not None}
 
 
 def validate_amount(amount):
@@ -53,7 +47,7 @@ def validate_currency(currency):
     :param currency:
     :return: char symbol or currency name in uppercase
     """
-    currencyID = currency.upper()
+    # currencyID = currency.upper()
 
     if len(currency) > 3:
         raise argparse.ArgumentTypeError("Input or output currency has a wrong format. Type currency  symbol or "
@@ -65,17 +59,22 @@ def validate_currency(currency):
         # Check if currency id exists
         if len(currency) == 3:
 
-            if currencyID not in json_data['results']:
-                raise argparse.ArgumentTypeError("Wrong input or output currency name")
+            if currency.upper() not in json_data['results']:
+                raise argparse.ArgumentTypeError("Wrong input or output currency name.")
             else:
-                return currencyID
+                return currency.upper()
 
         # Check if currency symbol exists
         else:
-            pass
+            all_symbols = get_all_symbols(json_data)
+
+            if currency not in all_symbols.values():
+                raise argparse.ArgumentTypeError("Wrong input or output currency symbol.")
+            else:
+                # TODO: convert currency symbol to 3 letters currency name
+                return currency
 
     return currency
-
 
 
 def parse_args():
@@ -102,4 +101,4 @@ def parse_args():
 
 if __name__ == '__main__':
     parsed_arguments = parse_args()
-    # print(parse_args())
+    print(parse_args())
