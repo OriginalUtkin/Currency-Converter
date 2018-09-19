@@ -14,7 +14,9 @@ def get_all_symbols(json_data):
 
     for currency in json_data.values():
         for currency_info in currency.values():
-             result[currency_info['id']] = currency_info.get('currencySymbol')
+            if (currency_info.get('currencySymbol') is not None) and \
+               (currency_info['currencySymbol'] not in result.values()):
+                result[currency_info['id']] = currency_info.get('currencySymbol')
 
     return result
 
