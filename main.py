@@ -4,16 +4,23 @@ import urllib.request
 import json
 
 
-def get_all_symbols(all_currencies):
+def get_name_symb(empty_value_flag):
     """
 
-    :param all_currencies:
-    :return:
+    :param empty_value_flag:
+    :return: dictionary as [3 letters name]:[currency symbol]
     """
+
+    with urllib.request.urlopen("https://free.currencyconverterapi.com/api/v6/currencies") as json_data:
+        all_currencies = json.load(json_data)
 
     for currency in all_currencies.values():
-        return {currency_info['id']: currency_info.get('currencySymbol').lower() for currency_info in
-                currency.values() if currency_info.get('currencySymbol') is not None}
+        if empty_value_flag:
+            return {currency_info['id']: currency_info.get("", 'currencySymbol').lower() for currency_info in
+                    currency.values()}
+        else:
+            return {currency_info['id']: currency_info.get('currencySymbol').lower() for currency_info in
+                    currency.values() if currency_info.get('currencySymbol') is not None}
 
 
 def get_currencies_by_symbol(symbol, all_currencies):
@@ -30,9 +37,9 @@ def get_currencies_by_symbol(symbol, all_currencies):
 
 def validate_amount(amount):
     """
-
-    :param amount:
-    :return:
+    Validate amount value
+    :param amount: input value for validating which represented by string
+    :return: amount value which represented by the float number
     """
 
     if not amount:
@@ -56,29 +63,26 @@ def validate_amount(amount):
 def validate_currency(currency):
     """
     Validate input and output currency symbol or 3 letters name
-    :param currency:
-    :return: char symbol or currency name in uppercase
+    :param currency: input value for validating which represented by string
+    :return: char currency symbol or currency name in uppercase
     """
-
     if len(currency) > 3:
         raise argparse.ArgumentTypeError("Input or output currency has a wrong format. Type currency  symbol or "
                                          "3 letters name.")
 
-    with urllib.request.urlopen("https://free.currencyconverterapi.com/api/v6/currencies") as allCurrencies:
-        json_data = json.load(allCurrencies)
+    curr_name_symb = get_name_symb(False)
 
-        # Check if currency id exists
-        if currency.upper() not in json_data['results']:
+    # Check if currency id exists
+    if currency.upper() not in curr_name_symb:
 
-            # Check if currency symbol exists
-            all_symbols = get_all_symbols(json_data)
+        # Check if currency symbol exists
+        if currency.lower() not in curr_name_symb.values():
+            raise argparse.ArgumentTypeError("Wrong input or output currency value.")
 
-            if currency.lower() not in all_symbols.values():
-                raise argparse.ArgumentTypeError("Wrong input or output currency symbol.")
-            else:
-                return currency
         else:
-            return currency.upper()
+            return currency
+    else:
+        return currency.upper()
 
 
 def parse_args():
@@ -105,4 +109,4 @@ def parse_args():
 
 if __name__ == '__main__':
     parsed_arguments = parse_args()
-    print(parse_args())
+    print(parsed_arguments)
