@@ -7,6 +7,9 @@ class ValidatingCurrencyTest(unittest.TestCase):
 
     def test_return(self):
         self.assertEqual(validate_currency("CzK"), "CZK")
+        self.assertEqual(validate_currency("czk"), "CZK")
+        self.assertEqual(validate_currency("CZK"), "CZK")
+        self.assertEqual(validate_currency("руб"), "руб")
 
     def test_length(self):
         with self.assertRaises(argparse.ArgumentTypeError):
@@ -21,8 +24,5 @@ class ValidatingCurrencyTest(unittest.TestCase):
             validate_currency("%")
 
     def test_symbol_exists(self):
-        self.assertEqual("$", "$")
+        self.assertEqual(validate_currency("$"), "$")
 
-    @unittest.skip("Function can't do that right now")
-    def convert_symbol_to_currency(self):
-        pass
