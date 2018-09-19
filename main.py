@@ -4,16 +4,28 @@ import urllib.request
 import json
 
 
-def get_all_symbols(json_data):
+def get_all_symbols(all_currencies):
     """
 
     :param all_currencies:
     :return:
     """
 
-    for currency in json_data.values():
+    for currency in all_currencies.values():
         return {currency_info['id']: currency_info.get('currencySymbol') for currency_info in
                 currency.values() if currency_info.get('currencySymbol') is not None}
+
+
+def get_currencies_by_symbol(symbol, all_currencies):
+    """
+
+    :param symbol:
+    :return:
+    """
+
+    for key, value in all_currencies.items():
+        pass
+        # if symbol == value
 
 
 def validate_amount(amount):
@@ -71,10 +83,7 @@ def validate_currency(currency):
             if currency not in all_symbols.values():
                 raise argparse.ArgumentTypeError("Wrong input or output currency symbol.")
             else:
-                # TODO: convert currency symbol to 3 letters currency name
                 return currency
-
-    return currency
 
 
 def parse_args():
