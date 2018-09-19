@@ -12,7 +12,7 @@ def get_all_symbols(all_currencies):
     """
 
     for currency in all_currencies.values():
-        return {currency_info['id']: currency_info.get('currencySymbol') for currency_info in
+        return {currency_info['id']: currency_info.get('currencySymbol').lower() for currency_info in
                 currency.values() if currency_info.get('currencySymbol') is not None}
 
 
@@ -59,7 +59,6 @@ def validate_currency(currency):
     :param currency:
     :return: char symbol or currency name in uppercase
     """
-    # currencyID = currency.upper()
 
     if len(currency) > 3:
         raise argparse.ArgumentTypeError("Input or output currency has a wrong format. Type currency  symbol or "
@@ -69,21 +68,17 @@ def validate_currency(currency):
         json_data = json.load(allCurrencies)
 
         # Check if currency id exists
-        if len(currency) == 3:
+        if currency.upper() not in json_data['results']:
 
-            if currency.upper() not in json_data['results']:
-                raise argparse.ArgumentTypeError("Wrong input or output currency name.")
-            else:
-                return currency.upper()
-
-        # Check if currency symbol exists
-        else:
+            # Check if currency symbol exists
             all_symbols = get_all_symbols(json_data)
 
-            if currency not in all_symbols.values():
+            if currency.lower() not in all_symbols.values():
                 raise argparse.ArgumentTypeError("Wrong input or output currency symbol.")
             else:
                 return currency
+        else:
+            return currency.upper()
 
 
 def parse_args():
@@ -103,7 +98,7 @@ def parse_args():
 
     parser.add_argument('--output_currency', help="Output currency. 3 letters or currency symbol."
                                                   "If this parameter is missing, program will convert "
-                                                  "to all known currencies.")
+                                                  "to all known currencies.", type=validate_currency)
 
     return vars(parser.parse_args())
 
