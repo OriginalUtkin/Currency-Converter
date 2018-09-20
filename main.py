@@ -16,7 +16,7 @@ def get_name_symb(empty_value_flag):
 
     for currency in all_currencies.values():
         if empty_value_flag:
-            return {currency_info['id']: currency_info.get("", 'currencySymbol').lower() for currency_info in
+            return {currency_info['id']: currency_info.get('currencySymbol',"").lower() for currency_info in
                     currency.values()}
         else:
             return {currency_info['id']: currency_info.get('currencySymbol').lower() for currency_info in
@@ -70,7 +70,7 @@ def validate_currency(currency):
         raise argparse.ArgumentTypeError("Input or output currency has a wrong format. Type currency  symbol or "
                                          "3 letters name.")
 
-    curr_name_symb = get_name_symb(False)
+    curr_name_symb = get_name_symb(True)
 
     # Check if currency id exists
     if currency.upper() not in curr_name_symb:
