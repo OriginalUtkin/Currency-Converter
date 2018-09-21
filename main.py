@@ -3,7 +3,8 @@ import math
 import urllib.request
 import json
 
-
+# TODO: Решить проблему с возвратом значения валюты из функции. Если аргумент валюты символ -> конвертируй в валюту
+# TODO: иначе ничего
 def get_name_symb(empty_value_flag):
     """
 
@@ -23,16 +24,17 @@ def get_name_symb(empty_value_flag):
                     currency.values() if currency_info.get('currencySymbol') is not None}
 
 
-def get_currencies_by_symbol(symbol, all_currencies):
+def get_currencies_by_symbol(symbol):
     """
 
     :param symbol:
     :return:
     """
+    all_currencies = get_name_symb(False)
 
     for key, value in all_currencies.items():
-        pass
-        # if symbol == value
+        return [currency for currency, curr_symbol in all_currencies.items() if curr_symbol == symbol]
+
 
 
 def validate_amount(amount):
@@ -110,3 +112,4 @@ def parse_args():
 if __name__ == '__main__':
     parsed_arguments = parse_args()
     print(parsed_arguments)
+    # print(len(get_currencies_by_symbol("$")))
