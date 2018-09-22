@@ -2,9 +2,13 @@ import argparse
 import math
 import urllib.request
 import json
+import constants
 
-# TODO: Решить проблему с возвратом значения валюты из функции. Если аргумент валюты символ -> конвертируй в валюту
-# TODO: иначе ничего
+
+# TODO: https://free.currencyconverterapi.com/api/v6/convert?q=EUR_RUB&compact=y
+# TODO : обрезать значения до двух цифр после запятой
+
+
 def get_name_symb(empty_value_flag):
     """
 
@@ -12,12 +16,12 @@ def get_name_symb(empty_value_flag):
     :return: dictionary as [3 letters name]:[currency symbol]
     """
 
-    with urllib.request.urlopen("https://free.currencyconverterapi.com/api/v6/currencies") as json_data:
+    with urllib.request.urlopen(constants.currencies_list_addr) as json_data:
         all_currencies = json.load(json_data)
 
     for currency in all_currencies.values():
         if empty_value_flag:
-            return {currency_info['id']: currency_info.get('currencySymbol',"").lower() for currency_info in
+            return {currency_info['id']: currency_info.get('currencySymbol', "").lower() for currency_info in
                     currency.values()}
         else:
             return {currency_info['id']: currency_info.get('currencySymbol').lower() for currency_info in
@@ -34,7 +38,6 @@ def get_currencies_by_symbol(symbol):
 
     for key, value in all_currencies.items():
         return [currency for currency, curr_symbol in all_currencies.items() if curr_symbol == symbol]
-
 
 
 def validate_amount(amount):
@@ -87,8 +90,37 @@ def validate_currency(currency):
         return currency.upper()
 
 
-def parse_args():
+def parse_converted_value(json_response):
+    """
+    json response after API request has following format:
+    {'<3 curr letters from>_<3 curr letters to>': {'val': <amount>}}
+    :param json_response:
+    :return:
+    """
+    for key, value in json_response.items():
+        return key[4:7], float(value['val'])
 
+
+def preparing_argument(argument_value):
+    if argument_value is None:
+        return constants.often_used_currencies
+
+    if get_currencies_by_symbol(argument_value):
+        return get_currencies_by_symbol(argument_value)
+
+    else:
+        return [argument_value]
+
+
+def get_output_json(data):
+    """
+
+    :param data:
+    :return:
+    """
+
+
+def parse_args():
     """
     Configure argparse object for working with input arguments
     :return: dictionary which has a following format -> input_argument_name: argument_value
@@ -112,4 +144,19 @@ def parse_args():
 if __name__ == '__main__':
     parsed_arguments = parse_args()
     print(parsed_arguments)
-    # print(len(get_currencies_by_symbol("$")))
+
+    parsed_arguments['input_currency'] = preparing_argument(parsed_arguments['input_currency'])
+    parsed_arguments['output_currency'] = preparing_argument(parsed_arguments['output_currency'])
+
+    for input_curr in parsed_arguments['input_currency']:
+        currency_output = dict()
+        result = list()
+
+        for output_curr in parsed_arguments['output_currency']:
+            with urllib.request.urlopen("https://free.currencyconverterapi.com/api/v6/convert?q={0}_{1}&compact=y"
+                                        .format(input_curr, output_curr)) as json_response:
+                converted_result = parse_converted_value(json.load(json_response))
+                currency_output[converted_result[0]] = converted_result[1] * parsed_arguments['amount']
+
+        print({'input': {'amount': parsed_arguments['amount'], 'currency': input_curr},
+               'output': {curr: val for curr, val in currency_output.items()}})
