@@ -1,6 +1,6 @@
 import unittest
 import argparse
-from main import validate_currency
+from core import validate_currency, get_currencies_by_symbol
 
 
 class ValidatingCurrencyTest(unittest.TestCase):
@@ -25,4 +25,10 @@ class ValidatingCurrencyTest(unittest.TestCase):
 
     def test_symbol_exists(self):
         self.assertEqual(validate_currency("$"), "$")
+
+    @unittest.skip("just for debugging")
+    def test_convert_symb_to_curr(self):
+        self.assertEqual(len(get_currencies_by_symbol("руб")), 1)
+        self.assertEqual(len(get_currencies_by_symbol("$")), 22)
+        self.assertEqual(len(get_currencies_by_symbol("£")), 7)
 

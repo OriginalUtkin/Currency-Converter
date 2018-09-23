@@ -1,6 +1,6 @@
 import unittest
 import argparse
-from main import validate_amount
+from core import validate_amount
 
 
 class ValidatingAmountTest(unittest.TestCase):
