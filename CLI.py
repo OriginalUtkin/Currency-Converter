@@ -29,30 +29,12 @@ def parse_args():
 
 if __name__ == '__main__':
     parsed_arguments = parse_args()
-    print(parsed_arguments)
 
     parsed_arguments['input_currency'] = core.preparing_argument(parsed_arguments['input_currency'])
     parsed_arguments['output_currency'] = core.preparing_argument(parsed_arguments['output_currency'])
 
-    for input_curr in parsed_arguments['input_currency']:
+    output = core.output(parsed_arguments['amount'], parsed_arguments['input_currency'],
+                         parsed_arguments['output_currency'])
 
-        currency_output = dict()
-
-        for output_curr in [value for value in parsed_arguments['output_currency'] if value != input_curr]:
-
-            with urllib.request.urlopen(constants.converting_request.format(input_curr, output_curr)) as json_response:
-                converted_result = core.parse_converted_value(json.load(json_response))
-                currency_output[converted_result[0]] = float('{:.2f}'.format(converted_result[1]
-                                                                             * parsed_arguments['amount']))
-        json_output = json.dumps(
-                        {
-                            "input": {
-                                    "amount": parsed_arguments['amount'],
-                                    "currency": input_curr
-                            },
-                            "output": {
-                                    curr: val for curr, val in currency_output.items()
-                                }
-                        })
-
-        print(json_output)
+    for elem in output:
+        print(elem)

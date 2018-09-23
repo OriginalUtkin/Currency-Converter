@@ -32,8 +32,7 @@ def get_currencies_by_symbol(symbol):
     """
     all_currencies = get_name_symb(False)
 
-    for key, value in all_currencies.items():
-        return [currency for currency, curr_symbol in all_currencies.items() if curr_symbol == symbol]
+    return [currency for currency, curr_symbol in all_currencies.items() if curr_symbol == symbol]
 
 
 def validate_amount(amount):
@@ -42,9 +41,6 @@ def validate_amount(amount):
     :param amount: input value for validating which represented by string
     :return: amount value which represented by the float number
     """
-
-    if not amount:
-        raise argparse.ArgumentTypeError("Amount value represented by empty string.")
 
     try:
         amount = float(amount)
@@ -107,10 +103,45 @@ def preparing_argument(argument_value):
     if argument_value is None:
         return constants.often_used_currencies
 
+    # argument_value is a currency symbol
     if get_currencies_by_symbol(argument_value):
         return get_currencies_by_symbol(argument_value)
 
+    # argument_value is 3 letters name
     else:
         return [argument_value]
 
 
+def output(amount, input_currency, output_currency):
+    """
+
+    :param amount:
+    :param input_currency:
+    :param output_currency:
+    :return:
+    """
+    result = list()
+
+    for input_curr in input_currency:
+
+        currency_output = dict()
+
+        for output_curr in [value for value in output_currency if value != input_curr]:
+
+            with urllib.request.urlopen(constants.converting_request.format(input_curr, output_curr)) as json_response:
+                converted_result = parse_converted_value(json.load(json_response))
+                currency_output[converted_result[0]] = float('{:.2f}'.format(converted_result[1]
+                                                                             * amount))
+        result.append(json.dumps(
+                        {
+                            "input": {
+                                    "amount": amount,
+                                    "currency": input_curr
+                            },
+                            "output": {
+                                    curr: val for curr, val in currency_output.items()
+                                }
+                        })
+                      )
+
+    return result
