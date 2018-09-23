@@ -1,9 +1,7 @@
 import core
 import argparse
-import math
 import urllib.request
 import json
-import constants
 
 
 def parse_args():
