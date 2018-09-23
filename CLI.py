@@ -2,7 +2,9 @@ import core
 import argparse
 import urllib.request
 import json
+import constants
 
+# TODO : Значение amount равняется нулю
 
 def parse_args():
     """
@@ -35,12 +37,10 @@ if __name__ == '__main__':
     for input_curr in parsed_arguments['input_currency']:
 
         currency_output = dict()
-        result = list()
 
         for output_curr in [value for value in parsed_arguments['output_currency'] if value != input_curr]:
 
-            with urllib.request.urlopen("https://free.currencyconverterapi.com/api/v6/convert?q={0}_{1}&compact=y"
-                                        .format(input_curr, output_curr)) as json_response:
+            with urllib.request.urlopen(constants.converting_request.format(input_curr, output_curr)) as json_response:
                 converted_result = core.parse_converted_value(json.load(json_response))
                 currency_output[converted_result[0]] = float('{:.2f}'.format(converted_result[1]
                                                                              * parsed_arguments['amount']))

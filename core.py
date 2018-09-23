@@ -38,7 +38,7 @@ def get_currencies_by_symbol(symbol):
 
 def validate_amount(amount):
     """
-    Validate amount value
+    Validate input amount value
     :param amount: input value for validating which represented by string
     :return: amount value which represented by the float number
     """
