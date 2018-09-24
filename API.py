@@ -1,8 +1,8 @@
 import core
 import argparse
+import urllib.error
 from flask import Flask, request, jsonify
 # TODO : Вывод в json
-# curl -X GET http://127.0.0.1:port/currency_converter?param_value&param_value HTTP/1.1
 app = Flask(__name__)
 
 
@@ -18,7 +18,9 @@ def currency_converter():
     output = core.output(arguments['amount'], arguments['input_currency'], arguments['output_currency'])
     print(output)
 
-    return str(arguments)
+    return jsonify(reults = core.output(arguments['amount'],
+                               arguments['input_currency'],
+                               arguments['output_currency']))
 
 
 def set_amount(input_amount):
@@ -79,5 +81,13 @@ def catch_404_exception(exc):
     return jsonify(error=404, text=(str(exc)))
 
 
+@app.errorhandler(urllib.error.HTTPError)
+def catch_forbidden(exc):
+    return jsonify(error=403, text=(str(exc) + ". This problem has been occurred because you send "
+                                               " more than 100 requests per 1 hour. See more on "
+                                               " https://free.currencyconverterapi.com/. Premium version"
+                                               " could solve this problem."))
+
+
 if __name__ == '__main__':
-    app.run(port=5000)
+    app.run(port=5001)
