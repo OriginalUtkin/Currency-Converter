@@ -5,7 +5,7 @@ import json
 
 def parse_args():
     """
-    Configure argparse object for working with input arguments
+    Prepare argparse object for working with input arguments
     :return: dictionary which has a following format -> input_argument_name: argument_value
     """
 

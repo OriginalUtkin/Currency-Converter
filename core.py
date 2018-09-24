@@ -7,9 +7,9 @@ import constants
 
 def get_name_symb(empty_value_flag):
     """
-
-    :param empty_value_flag:
-    :return: dictionary as [3 letters name]:[currency symbol]
+    Create a dictionary with currencies names and currencies symbols
+    :param empty_value_flag: if a flag is set to true, currencies without currencies symbol will be added to result list
+    :return: dictionary with following structure [3 letters name]:[currency symbol]
     """
 
     with urllib.request.urlopen(constants.currencies_list_addr) as json_data:
@@ -26,9 +26,9 @@ def get_name_symb(empty_value_flag):
 
 def get_currencies_by_symbol(symbol):
     """
-
-    :param symbol:
-    :return:
+    Get all currencies that is associated with symbol param
+    :param symbol: symbol which represents currency
+    :return: list with all currencies that is associated with this symbol
     """
     all_currencies = get_name_symb(False)
 
@@ -84,10 +84,10 @@ def validate_currency(currency):
 
 def parse_converted_value(json_response):
     """
-    json response after API request has following format:
+    Parse received json response. Response has a following format:
     {'<3 curr letters from>_<3 curr letters to>': {'val': <amount>}}
-    :param json_response:
-    :return:
+    :param json_response: received json response from server
+    :return:currency name and currency rate
     """
     for key, value in json_response.items():
         return key[4:7], float(value['val'])
@@ -95,9 +95,9 @@ def parse_converted_value(json_response):
 
 def preparing_argument(argument_value):
     """
-
-    :param argument_value:
-    :return:
+    Prepare input/output currency argument for API request
+    :param argument_value: currency name or symbol
+    :return: list with currencies
     """
 
     if argument_value is None:
@@ -112,13 +112,22 @@ def preparing_argument(argument_value):
         return [argument_value]
 
 
+def float_output(value):
+    """
+    Format argument_value to float value with 2 digits after decimal point
+    :param value: float value for formatting
+    :return: float value with 2 digits after decimal point
+    """
+    return float(format(value, '.2f'))
+
+
 def output(amount, input_currency, output_currency):
     """
-
-    :param amount:
-    :param input_currency:
-    :param output_currency:
-    :return:
+    Prepare an input and converted data for serializing to json format
+    :param amount: input amount value
+    :param input_currency: list with all currencies reductions (3 letters name) from --input_currency argument
+    :param output_currency: list with all currencies reductions (3 letters name) from --output_currency argument
+    :return: prepared serializable string
     """
     result = list()
 
@@ -128,18 +137,24 @@ def output(amount, input_currency, output_currency):
 
         for output_curr in [value for value in output_currency if value != input_curr]:
 
-            with urllib.request.urlopen(constants.converting_request.format(input_curr, output_curr)) as json_response:
-                converted_result = parse_converted_value(json.load(json_response))
-                currency_output[converted_result[0]] = float("%.2f" % (converted_result[1] * amount))
+            # Okay guys, I can convert this one without API request
+            if amount == 0:
+                currency_output[output_curr] = float_output(0.00)
 
-        # input and output was equals
+            # get currency rate and calculate output result
+            else:
+                with urllib.request.urlopen(constants.converting_request.format(input_curr, output_curr)) as json_response:
+                    converted_result = parse_converted_value(json.load(json_response))
+                    currency_output[converted_result[0]] = float_output(converted_result[1] * amount)
+
+        # output currency list contains just a input  currency
         if not currency_output:
             currency_output = {input_currency[0]: amount}
 
         result.append(
                         {
                             "input": {
-                                    "amount": amount,
+                                    "amount": float_output(amount),
                                     "currency": input_curr
                             },
                             "output": {

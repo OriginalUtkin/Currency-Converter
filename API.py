@@ -22,9 +22,9 @@ def currency_converter():
 
 def set_amount(input_amount):
     """
-
-    :param input_amount:
-    :return:
+    Validate and set the arguments['amount'] value
+    :param input_amount: input amount value from HTTP request
+    :return: amount value which represented by the float number
     """
     # default amount value is 1
     if (input_amount is None) or (not input_amount):
@@ -36,10 +36,11 @@ def set_amount(input_amount):
 
 def set_input_currency(input_currency):
     """
-
-    :param input_currency:
-    :return:
+    Validate and set the arguments['input_currency'] value
+    :param input_currency: input currency value from HTTP request
+    :return: list with all currencies reductions (3 letters names)
     """
+
     if (input_currency is None) or (not input_currency):
         raise argparse.ArgumentTypeError("input_currency is required argument")
 
@@ -49,9 +50,9 @@ def set_input_currency(input_currency):
 
 def set_output_currency(output_currency):
     """
-
-    :param output_currency:
-    :return:
+    Validate and set the  arguments['output currency'] value
+    :param output_currency: output currency value from HTTP request
+    :return: list with all currencies reductions (3 letters names)
     """
     if not output_currency:
         output_currency = None
@@ -87,4 +88,4 @@ def catch_forbidden(exc):
 
 
 if __name__ == '__main__':
-    app.run(port=5001)
+    app.run(port=5002)
