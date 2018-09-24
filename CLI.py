@@ -1,10 +1,7 @@
 import core
 import argparse
-import urllib.request
 import json
-import constants
 
-# TODO : Значение amount равняется нулю
 
 def parse_args():
     """
@@ -37,4 +34,4 @@ if __name__ == '__main__':
                          parsed_arguments['output_currency'])
 
     for elem in output:
-        print(elem)
+        print(json.dumps(elem))

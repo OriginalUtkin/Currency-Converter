@@ -2,7 +2,7 @@ import core
 import argparse
 import urllib.error
 from flask import Flask, request, jsonify
-# TODO : Вывод в json
+
 app = Flask(__name__)
 
 
@@ -16,11 +16,8 @@ def currency_converter():
     }
 
     output = core.output(arguments['amount'], arguments['input_currency'], arguments['output_currency'])
-    print(output)
 
-    return jsonify(reults = core.output(arguments['amount'],
-                               arguments['input_currency'],
-                               arguments['output_currency']))
+    return jsonify(output)
 
 
 def set_amount(input_amount):
