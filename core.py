@@ -130,9 +130,13 @@ def output(amount, input_currency, output_currency):
 
             with urllib.request.urlopen(constants.converting_request.format(input_curr, output_curr)) as json_response:
                 converted_result = parse_converted_value(json.load(json_response))
-                currency_output[converted_result[0]] = float('{:.2f}'.format(converted_result[1]
-                                                                             * amount))
-        result.append(json.dumps(
+                currency_output[converted_result[0]] = "%.2f" % (converted_result[1] * amount)
+
+        # input and output was equals
+        if not currency_output:
+            currency_output = {input_currency[0]: amount}
+
+        result.append(
                         {
                             "input": {
                                     "amount": amount,
@@ -141,7 +145,7 @@ def output(amount, input_currency, output_currency):
                             "output": {
                                     curr: val for curr, val in currency_output.items()
                                 }
-                        })
-                      )
+                        }
+                    )
 
     return result
