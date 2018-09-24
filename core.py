@@ -130,7 +130,7 @@ def output(amount, input_currency, output_currency):
 
             with urllib.request.urlopen(constants.converting_request.format(input_curr, output_curr)) as json_response:
                 converted_result = parse_converted_value(json.load(json_response))
-                currency_output[converted_result[0]] = "%.2f" % (converted_result[1] * amount)
+                currency_output[converted_result[0]] = float("%.2f" % (converted_result[1] * amount))
 
         # input and output was equals
         if not currency_output:
