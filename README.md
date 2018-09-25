@@ -156,3 +156,8 @@ GET /currency_converter?amount=10.92&input_currency=£ HTTP/1.1
 
 ## Known issues
 The free version of [FreeCurencyAPI](https://free.currencyconverterapi.com/) allows you to send just 100 requests per hour. After that you are getting a HTTP response from server with 403 : Forbidden error code.  You have to wait for some time for sending another requests to server. This problem could be solved with buying a premium version of this service.
+
+ ## TODO
+ - offline conversion
+ - save output data to local machine using CLI version of program
+ - cache requests
