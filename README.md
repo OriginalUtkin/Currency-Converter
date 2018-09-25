@@ -37,13 +37,13 @@ GET /currency_converter?amount=<number>&input_currency=<string>&output_currency=
 }
 ```
 - If problem was occured, you will get:
-+ - json file with following structure using Web API:
++  json file with following structure using Web API:
 ```
 code: <error code>
 text: <error text description>
 ```
 
-+ - Text output using CLI verion:
++  string output using CLI verion:
 ```
 error:<error text description>
 ```
