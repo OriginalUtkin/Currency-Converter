@@ -9,7 +9,7 @@ def get_name_symb(empty_value_flag):
     """
     Create a dictionary with currencies names and currencies symbols
     :param empty_value_flag: if a flag is set to true, currencies without currencies symbol will be added to result list
-    :return: dictionary with following structure [3 letters name]:[currency symbol]
+    :return: dictionary with following structure [currency code]:[currency symbol]
     """
 
     with urllib.request.urlopen(constants.currencies_list_addr) as json_data:
@@ -59,13 +59,13 @@ def validate_amount(amount):
 
 def validate_currency(currency):
     """
-    Validate input and output currency symbol or 3 letters name
+    Validate input and output currency symbol or currency code
     :param currency: input value for validating which represented by string
     :return: char currency symbol or currency name in uppercase
     """
     if len(currency) > 3:
         raise argparse.ArgumentTypeError("Input or output currency has a wrong format. Type currency  symbol or "
-                                         "3 letters name.")
+                                         " currency code.")
 
     curr_name_symb = get_name_symb(True)
 
@@ -85,7 +85,7 @@ def validate_currency(currency):
 def parse_converted_value(json_response):
     """
     Parse received json response. Response has a following format:
-    {'<3 curr letters from>_<3 curr letters to>': {'val': <amount>}}
+    {'<currency code from>_<currency code to>': {'val': <amount>}}
     :param json_response: received json response from server
     :return:currency name and currency rate
     """
@@ -107,7 +107,7 @@ def preparing_argument(argument_value):
     if get_currencies_by_symbol(argument_value):
         return get_currencies_by_symbol(argument_value)
 
-    # argument_value is 3 letters name
+    # argument_value is currency code
     else:
         return [argument_value]
 
@@ -125,8 +125,8 @@ def output(amount, input_currency, output_currency):
     """
     Prepare an input and converted data for serializing to json format
     :param amount: input amount value
-    :param input_currency: list with all currencies reductions (3 letters name) from --input_currency argument
-    :param output_currency: list with all currencies reductions (3 letters name) from --output_currency argument
+    :param input_currency: list with all currencies code from --input_currency argument
+    :param output_currency: list with all currencies code from --output_currency argument
     :return: prepared serializable string
     """
     result = list()

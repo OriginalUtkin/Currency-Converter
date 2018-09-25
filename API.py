@@ -38,7 +38,7 @@ def set_input_currency(input_currency):
     """
     Validate and set the arguments['input_currency'] value
     :param input_currency: input currency value from HTTP request
-    :return: list with all currencies reductions (3 letters names)
+    :return: list with all currencies codes
     """
 
     if (input_currency is None) or (not input_currency):
@@ -52,7 +52,7 @@ def set_output_currency(output_currency):
     """
     Validate and set the  arguments['output currency'] value
     :param output_currency: output currency value from HTTP request
-    :return: list with all currencies reductions (3 letters names)
+    :return: list with all currencies codes
     """
     if not output_currency:
         output_currency = None
@@ -81,7 +81,7 @@ def catch_404_exception(exc):
 
 @app.errorhandler(urllib.error.HTTPError)
 def catch_forbidden(exc):
-    return jsonify(error=403, text=(str(exc) + ". This problem has been occurred because you send "
+    return jsonify(error=403, text=(str(exc) + ". This problem has been occurred because you have sent "
                                                " more than 100 requests per 1 hour. See more on "
                                                " https://free.currencyconverterapi.com/. Premium version"
                                                " could solve this problem."))

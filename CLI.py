@@ -14,10 +14,10 @@ def parse_args():
     parser.add_argument('--amount', help="Converting amount. Should be a number value. If this parameter is missing"
                                          ", program will set this value to 1", default=1, type=core.validate_amount)
 
-    parser.add_argument('--input_currency', help="Input currency for converting. Should be represented by 3 letters "
-                                                 "name or currency symbol", required=True, type=core.validate_currency)
+    parser.add_argument('--input_currency', help="Input currency for converting. Should be represented by currency code"
+                                                 " name or currency symbol", required=True, type=core.validate_currency)
 
-    parser.add_argument('--output_currency', help="Output currency. 3 letters or currency symbol."
+    parser.add_argument('--output_currency', help="Output currency. Contains currency code or currency symbol."
                                                   "If this parameter is missing, program will convert "
                                                   "to all known currencies.", type=core.validate_currency)
 
