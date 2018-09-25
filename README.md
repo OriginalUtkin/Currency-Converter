@@ -18,7 +18,7 @@ Python 3.6
 GET /currency_converter?amount=<number>&input_currency=<string>&output_currency=<string> HTTP/1.1
 ```
 
-## Inpt parameters
+## Input parameters
 - `amount` - amount which we want to convert - float value. If isn't set, will be set to 1.
 - `input_currency` - input currency - 3 letters name or currency symbol. Required
 - `output_currency` - requested/output currency - 3 letters name or currency symbol. If isn't set, program will convert input amount value to often usable currencies as: EUR, USD, RUB, CZK, GBP, AUD, JPY, CHF.
@@ -37,13 +37,13 @@ GET /currency_converter?amount=<number>&input_currency=<string>&output_currency=
 }
 ```
 - If problem was occured, you will get:
-..* - json file with following structure using Web API:
++ - json file with following structure using Web API:
 ```
 code: <error code>
 text: <error text description>
 ```
 
-..* - Text output using CLI verion:
++ - Text output using CLI verion:
 ```
 error:<error text description>
 ```
