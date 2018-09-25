@@ -8,6 +8,10 @@ Python 3.6
 ## Built with
 * [Flask 1.0.2](http://flask.pocoo.org/) - The web framework used
 
+## Currency conversion API
+Program use the last verion of [this](https://free.currencyconverterapi.com/) API. All supported currencies could be found on [this page](https://free.currencyconverterapi.com/api/v6/currencies)
+
+
 ## Usage 
 * CLI
 ```
@@ -37,13 +41,13 @@ GET /currency_converter?amount=<number>&input_currency=<string>&output_currency=
 }
 ```
 - If problem was occured, you will get:
-+  json file with following structure using Web API:
+ *  json with following structure using Web API:
 ```
 code: <error code>
 text: <error text description>
 ```
 
-+  string output using CLI verion:
+ *  string output using CLI verion:
 ```
 error:<error text description>
 ```
@@ -161,3 +165,4 @@ The free version of [FreeCurencyAPI](https://free.currencyconverterapi.com/) all
  - offline conversion
  - save output data to local machine using CLI version of program
  - cache requests
+ - logging  (?)
