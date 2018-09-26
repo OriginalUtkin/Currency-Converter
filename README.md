@@ -1,5 +1,5 @@
 # Currency-Converter
-The Junior Python Developer practical task. [Leran more](https://gist.github.com/MichalCab/c1dce3149d5131d89c5bbddbc602777c)
+The Junior Python Developer practical task. [Read more](https://gist.github.com/MichalCab/c1dce3149d5131d89c5bbddbc602777c)
 
 ## Prerequisites
 
