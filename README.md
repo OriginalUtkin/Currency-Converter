@@ -5,6 +5,12 @@ The Junior Python Developer practical task. [Read more](https://gist.github.com/
 
 Python 3.6
 
+## Installation
+```
+pip install -r requirements.txt
+```
+
+
 ## Built with
 * [Flask 1.0.2](http://flask.pocoo.org/) - The web framework used
 
