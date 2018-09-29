@@ -55,7 +55,7 @@ def set_output_currency(output_currency):
     :return: list with all currencies codes
     """
     if (not output_currency) or (output_currency is None):
-        return core.preparing_argument(output_currency)
+        return core.preparing_argument(None)
 
     else:
         return core.preparing_argument(core.validate_currency(output_currency))
