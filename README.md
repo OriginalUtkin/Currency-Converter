@@ -66,7 +66,7 @@ pytest utest_amount.py
 or
 
 ```
-pytest currency_amount.py
+pytest utest_currency.py
 ```
 
 
