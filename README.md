@@ -10,7 +10,6 @@ Python 3.6
 pip install -r requirements.txt
 ```
 
-
 ## Built with
 * [Flask 1.0.2](http://flask.pocoo.org/) - The web framework used
 
@@ -57,6 +56,19 @@ text: <error text description>
 ```
 error:<error text description>
 ```
+
+## Testing
+After installation, you can launch tests (you should have [pytest](https://docs.pytest.org/en/latest/) >= 3.2.1 installed).
+
+```
+pytest utest_amount.py
+```
+or
+
+```
+pytest currency_amount.py
+```
+
 
 ## Examples
 
