@@ -54,10 +54,7 @@ def set_output_currency(output_currency):
     :param output_currency: output currency value from HTTP request
     :return: list with all currencies codes
     """
-    if not output_currency:
-        output_currency = None
-
-    if output_currency is None:
+    if (not output_currency) or (output_currency is None):
         return core.preparing_argument(output_currency)
 
     else:
