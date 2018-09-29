@@ -11,8 +11,8 @@ def currency_converter():
 
     arguments = {
         'amount': set_amount(request.args.get('amount')),
-        'input_currency': set_input_currency(request.args.get('input_currency')),
-        'output_currency': set_output_currency(request.args.get('output_currency'))
+        'input_currency': set_currency(request.args.get('input_currency'), True),
+        'output_currency': set_currency(request.args.get('output_currency'))
     }
 
     output = core.output(arguments['amount'], arguments['input_currency'], arguments['output_currency'])
@@ -34,31 +34,24 @@ def set_amount(input_amount):
         return core.validate_amount(input_amount)
 
 
-def set_input_currency(input_currency):
+def set_currency(currency_value, none_flag=False):
     """
-    Validate and set the arguments['input_currency'] value
-    :param input_currency: input currency value from HTTP request
+    Validate and set arguments['input_currency'] / arguments['output_currency'] value
+    :param currency_value: input currency value from HTTP request
+    :param none_flag: if is set, raises a exception if currency_value is None.
     :return: list with all currencies codes
     """
 
-    if (input_currency is None) or (not input_currency):
-        raise argparse.ArgumentTypeError("input_currency is required argument")
+    if (currency_value is None) or (not currency_value):
+
+        if none_flag:
+            raise argparse.ArgumentTypeError("input_currency is required argument")
+
+        else:
+            return core.preparing_argument(None)
 
     else:
-        return core.preparing_argument(core.validate_currency(input_currency))
-
-
-def set_output_currency(output_currency):
-    """
-    Validate and set the  arguments['output currency'] value
-    :param output_currency: output currency value from HTTP request
-    :return: list with all currencies codes
-    """
-    if (not output_currency) or (output_currency is None):
-        return core.preparing_argument(None)
-
-    else:
-        return core.preparing_argument(core.validate_currency(output_currency))
+        return core.preparing_argument(core.validate_currency(currency_value))
 
 
 @app.errorhandler(argparse.ArgumentTypeError)
