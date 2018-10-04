@@ -15,7 +15,7 @@ pip install -r requirements.txt
 * [Redis 4.0.11](https://redis.io/) - Used as a database, cache and message broker
 
 ## Currency conversion API
-Program use the last version of [this](https://free.currencyconverterapi.com/) API. All supported currencies could be found on [this page](https://free.currencyconverterapi.com/api/v6/currencies)
+Program use the last version of [this](https://free.currencyconverterapi.com/) API. All supported currencies could be found on [this page](https://free.currencyconverterapi.com/api/v6/currencies).
 License statements could be found on [main page](https://free.currencyconverterapi.com/).
 
 ## Usage 
