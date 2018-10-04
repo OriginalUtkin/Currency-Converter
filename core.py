@@ -8,6 +8,7 @@ import redis
 # Creating local data base with db number 0 on local machine.
 redis_db = redis.StrictRedis(host="localhost", port=6379, db=0)
 
+
 def get_name_symb(empty_value_flag):
     """
     Create a dictionary with currencies names and currencies symbols
@@ -159,18 +160,24 @@ def output(amount, input_currency, output_currency):
             # get currency rate and calculate output result
             else:
 
+                cached_key = get_cached_key(input_curr, output_curr)
+
                 # request hasn't been cached
-                if not redis_db.get(get_cached_key(input_curr, output_curr)):
+                if not redis_db.get(cached_key):
 
                     with urllib.request.urlopen(constants.converting_request.format(input_curr, output_curr)) as json_response:
                         converted_result = parse_converted_value(json.load(json_response))
-                        currency_output[converted_result[0]] = float_output(converted_result[1] * amount)
+                        curr_value = converted_result[1]
 
-                    # add key : value to redis DB
+                    # add key : value to data base
+                    redis_db.set(cached_key, converted_result[1])
+                    redis_db.expire(cached_key, constants.expire_time)
 
                 # request has been already cached in data base
                 else:
-                    pass
+                    curr_value = redis_db.get(cached_key)
+
+                currency_output[output_curr] = float_output(curr_value * amount)
 
         # output currency list contains just a input  currency
         if not currency_output:
