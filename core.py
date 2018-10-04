@@ -5,6 +5,8 @@ import json
 import constants
 import redis
 
+# Creating local data base with db number 0 on local machine.
+redis_db = redis.StrictRedis(host="localhost", port=6379, db=0)
 
 def get_name_symb(empty_value_flag):
     """
@@ -122,6 +124,16 @@ def float_output(value):
     return float(format(value, '.2f'))
 
 
+def get_cached_key(input, output):
+    """
+
+    :param input:
+    :param output:
+    :return:
+    """
+    return "{0}_{1}".format(input, output)
+
+
 def output(amount, input_currency, output_currency):
     """
     Prepare an input and converted data for serializing to json format
@@ -130,6 +142,8 @@ def output(amount, input_currency, output_currency):
     :param output_currency: list with all currencies code from --output_currency argument
     :return: prepared serializable string
     """
+
+    # Contains all json result strings for outputting
     result = list()
 
     for input_curr in input_currency:
@@ -144,9 +158,19 @@ def output(amount, input_currency, output_currency):
 
             # get currency rate and calculate output result
             else:
-                with urllib.request.urlopen(constants.converting_request.format(input_curr, output_curr)) as json_response:
-                    converted_result = parse_converted_value(json.load(json_response))
-                    currency_output[converted_result[0]] = float_output(converted_result[1] * amount)
+
+                # request hasn't been cached
+                if not redis_db.get(get_cached_key(input_curr, output_curr)):
+
+                    with urllib.request.urlopen(constants.converting_request.format(input_curr, output_curr)) as json_response:
+                        converted_result = parse_converted_value(json.load(json_response))
+                        currency_output[converted_result[0]] = float_output(converted_result[1] * amount)
+
+                    # add key : value to redis DB
+
+                # request has been already cached in data base
+                else:
+                    pass
 
         # output currency list contains just a input  currency
         if not currency_output:
