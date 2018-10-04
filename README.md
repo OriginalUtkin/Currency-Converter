@@ -12,10 +12,11 @@ pip install -r requirements.txt
 
 ## Built with
 * [Flask 1.0.2](http://flask.pocoo.org/) - The web framework used
+* [Redis 4.0.11](https://redis.io/) - Used as a database, cache and message broker
 
 ## Currency conversion API
-Program use the last verion of [this](https://free.currencyconverterapi.com/) API. All supported currencies could be found on [this page](https://free.currencyconverterapi.com/api/v6/currencies)
-
+Program use the last version of [this](https://free.currencyconverterapi.com/) API. All supported currencies could be found on [this page](https://free.currencyconverterapi.com/api/v6/currencies)
+License statements could be found on [main page](https://free.currencyconverterapi.com/).
 
 ## Usage 
 * CLI
@@ -45,14 +46,14 @@ GET /currency_converter?amount=<number>&input_currency=<string>&output_currency=
     }
 }
 ```
-- If problem was occured, you will get:
+- If problem was occurred, you will get:
  *  json with following structure using Web API:
 ```
 code: <error code>
 text: <error text description>
 ```
 
- *  string output using CLI verion:
+ *  string output using CLI version:
 ```
 error:<error text description>
 ```
@@ -182,5 +183,4 @@ The free version of [FreeCurencyAPI](https://free.currencyconverterapi.com/) all
  ## TODO
  - offline conversion
  - save output data to local machine using CLI version of program
- - cache requests
  - logging  (?)
