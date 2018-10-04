@@ -4,9 +4,13 @@ import urllib.request
 import json
 import constants
 import redis
+import logging
 
-# Creating local data base with db number 0 on local machine.
+# Creating local data base with db number 0.
 redis_db = redis.StrictRedis(host="localhost", port=6379, db=0)
+
+logging.basicConfig(filename="debug.log", level=logging.INFO, format=constants.logger_format)
+core_logger = logging.getLogger("Core logger")
 
 
 def get_name_symb(empty_value_flag):
@@ -125,14 +129,15 @@ def float_output(value):
     return float(format(value, '.2f'))
 
 
-def get_cached_key(input, output):
+def get_cached_key(input_curr, output_curr):
     """
-
-    :param input:
-    :param output:
-    :return:
+    Construct a db key which has a format <input curr code>_<output_curr_code>)
+    i.e. EUR_CZK, CZK_RUB etc
+    :param input_curr: input currency code (3 letters name)
+    :param output_curr: output currency code (3 letters name)
+    :return: prepared string db key
     """
-    return "{0}_{1}".format(input, output)
+    return "{0}_{1}".format(input_curr, output_curr)
 
 
 def output(amount, input_currency, output_currency):
@@ -164,6 +169,7 @@ def output(amount, input_currency, output_currency):
 
                 # request hasn't been cached
                 if not redis_db.get(cached_key):
+                    core_logger.debug("Get value using api")
 
                     with urllib.request.urlopen(constants.converting_request.format(input_curr, output_curr)) as json_response:
                         converted_result = parse_converted_value(json.load(json_response))
@@ -175,7 +181,8 @@ def output(amount, input_currency, output_currency):
 
                 # request has been already cached in data base
                 else:
-                    curr_value = redis_db.get(cached_key)
+                    core_logger.debug("Get value using data base")
+                    curr_value = float(redis_db.get(cached_key))
 
                 currency_output[output_curr] = float_output(curr_value * amount)
 
