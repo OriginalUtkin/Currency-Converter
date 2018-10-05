@@ -6,11 +6,11 @@ import constants
 import redis
 import logging
 
-# Creating local data base with db number 0.
-redis_db = redis.StrictRedis(host="localhost", port=6379, db=0)
-
 logging.basicConfig(filename="debug.log", level=logging.INFO, format=constants.logger_format)
 core_logger = logging.getLogger("Core logger")
+
+# Creating local data base with db number 0.
+redis_db = redis.StrictRedis(host="localhost", port=6379, db=0)
 
 
 def get_name_symb(empty_value_flag):
@@ -164,25 +164,30 @@ def output(amount, input_currency, output_currency):
 
             # get currency rate and calculate output result
             else:
-
                 cached_key = get_cached_key(input_curr, output_curr)
 
-                # request hasn't been cached
-                if not redis_db.get(cached_key):
-                    core_logger.debug("Get value using api")
+                try:
 
-                    with urllib.request.urlopen(constants.converting_request.format(input_curr, output_curr)) as json_response:
-                        converted_result = parse_converted_value(json.load(json_response))
-                        curr_value = converted_result[1]
+                    # request hasn't been cached
+                    if not redis_db.get(cached_key):
+                        core_logger.debug("Get value using api")
 
-                    # add key : value to data base
-                    redis_db.set(cached_key, converted_result[1])
-                    redis_db.expire(cached_key, constants.expire_time)
+                        with urllib.request.urlopen(constants.converting_request.format(input_curr, output_curr)) as json_response:
+                            converted_result = parse_converted_value(json.load(json_response))
+                            curr_value = converted_result[1]
 
-                # request has been already cached in data base
-                else:
-                    core_logger.debug("Get value using data base")
-                    curr_value = float(redis_db.get(cached_key))
+                        # add key : value to data base
+                        redis_db.set(cached_key, converted_result[1])
+                        redis_db.expire(cached_key, constants.expire_time)
+
+                    # request has been already cached in data base
+                    else:
+                        core_logger.debug("Get value using data base")
+                        curr_value = float(redis_db.get(cached_key))
+
+                except (ConnectionRefusedError, redis.ConnectionError, redis.TimeoutError) as exc:
+                    core_logger.warning("Houston, our DB doesn't feel well.")
+                    raise
 
                 currency_output[output_curr] = float_output(curr_value * amount)
 
