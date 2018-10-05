@@ -140,6 +140,19 @@ def get_cached_key(input_curr, output_curr):
     return "{0}_{1}".format(input_curr, output_curr)
 
 
+def api_request(input_curr, output_curr):
+    """
+    Send API request with specified parameters
+    :param input_curr: input currency code
+    :param output_curr: output currency code
+    :return: currency rate represented by float
+    """
+    with urllib.request.urlopen(constants.converting_request.format(input_curr, output_curr)) as json_response:
+        converted_result = parse_converted_value(json.load(json_response))
+
+    return converted_result[1]
+
+
 def output(amount, input_currency, output_currency):
     """
     Prepare an input and converted data for serializing to json format
@@ -166,18 +179,17 @@ def output(amount, input_currency, output_currency):
             else:
                 cached_key = get_cached_key(input_curr, output_curr)
 
+                # if db is available, check it. Value could be cached before
                 try:
 
                     # request hasn't been cached
                     if not redis_db.get(cached_key):
                         core_logger.debug("Get value using api")
 
-                        with urllib.request.urlopen(constants.converting_request.format(input_curr, output_curr)) as json_response:
-                            converted_result = parse_converted_value(json.load(json_response))
-                            curr_value = converted_result[1]
+                        curr_value = api_request(input_curr, output_curr)
 
                         # add key : value to data base
-                        redis_db.set(cached_key, converted_result[1])
+                        redis_db.set(cached_key, curr_value)
                         redis_db.expire(cached_key, constants.expire_time)
 
                     # request has been already cached in data base
@@ -185,9 +197,10 @@ def output(amount, input_currency, output_currency):
                         core_logger.debug("Get value using data base")
                         curr_value = float(redis_db.get(cached_key))
 
-                except (ConnectionRefusedError, redis.ConnectionError, redis.TimeoutError) as exc:
+                # db doesn't work. Need send request to API without cache checking
+                except (redis.ConnectionError, redis.TimeoutError):
                     core_logger.warning("Houston, our DB doesn't feel well.")
-                    raise
+                    curr_value = api_request(input_curr, output_curr)
 
                 currency_output[output_curr] = float_output(curr_value * amount)
 
