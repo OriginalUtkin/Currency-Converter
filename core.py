@@ -120,13 +120,15 @@ def preparing_argument(argument_value):
         return [argument_value]
 
 
-def float_output(value):
+def float_output(value, fractional_part):
     """
     Format argument_value to float value with 2 digits after decimal point
     :param value: float value for formatting
-    :return: float value with 2 digits after decimal point
+    :param fractional_part: number digits after dot
+    :return: float value with fractional_part digits after decimal point
     """
-    return float(format(value, '.2f'))
+
+    return math.floor(value * 10 ** fractional_part) / 10 ** fractional_part
 
 
 def get_cached_key(input_curr, output_curr):
@@ -173,7 +175,7 @@ def output(amount, input_currency, output_currency):
 
             # Okay guys, I can convert this one without API request
             if amount == 0:
-                currency_output[output_curr] = float_output(0.00)
+                currency_output[output_curr] = float_output(0.00, 2)
 
             # get currency rate and calculate output result
             else:
@@ -202,7 +204,7 @@ def output(amount, input_currency, output_currency):
                     core_logger.warning("Houston, our DB doesn't feel well.")
                     curr_value = api_request(input_curr, output_curr)
 
-                currency_output[output_curr] = float_output(curr_value * amount)
+                currency_output[output_curr] = float_output(curr_value * amount, 2)
 
         # output currency list contains just a input  currency
         if not currency_output:
@@ -211,7 +213,7 @@ def output(amount, input_currency, output_currency):
         result.append(
                         {
                             "input": {
-                                    "amount": float_output(amount),
+                                    "amount": float_output(amount, 2),
                                     "currency": input_curr
                             },
                             "output": {
