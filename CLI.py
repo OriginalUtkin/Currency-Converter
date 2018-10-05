@@ -1,7 +1,6 @@
 import core
 import argparse
 import json
-from redis import exceptions as r_exceptions
 
 
 def parse_args():
@@ -31,14 +30,8 @@ if __name__ == '__main__':
     parsed_arguments['input_currency'] = core.preparing_argument(parsed_arguments['input_currency'])
     parsed_arguments['output_currency'] = core.preparing_argument(parsed_arguments['output_currency'])
 
-    # try:
     output = core.output(parsed_arguments['amount'], parsed_arguments['input_currency'],
                          parsed_arguments['output_currency'])
 
     for elem in output:
         print(json.dumps(elem))
-    #
-    # except (r_exceptions.ConnectionError, r_exceptions.TimeoutError):
-    #     print("error: Cache database doesn't work")
-
-

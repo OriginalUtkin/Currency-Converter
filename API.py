@@ -2,7 +2,6 @@ import core
 import argparse
 import urllib.error
 from flask import Flask, request, jsonify
-from redis import exceptions as r_exceptions
 
 app = Flask(__name__)
 
@@ -63,16 +62,6 @@ def catch_ArgumentTypeError_exception(exc):
 @app.errorhandler(TypeError)
 def catch_ValueError_exception(exc):
     return jsonify(error=400, text=(str(exc)))
-
-
-@app.errorhandler(r_exceptions.ConnectionError)
-def catch_redis_exception(exc):
-    return jsonify(error=503, text=(str(exc)))
-
-
-@app.errorhandler(r_exceptions.TimeoutError)
-def catch_redis_exception(exc):
-    return jsonify(error=503, text=(str(exc)))
 
 
 @app.errorhandler(404)
