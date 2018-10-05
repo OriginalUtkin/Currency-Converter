@@ -12,7 +12,7 @@ pip install -r requirements.txt
 
 ## Built with
 * [Flask 1.0.2](http://flask.pocoo.org/) - The web framework used
-* [Redis 2.10.6](https://github.com/andymccurdy/redis-py/) - Python library for communication with [Redis server (4.0.11)](https://redis.io/) which used as a database, cache and message broker
+* [Redis 2.10.6](https://github.com/andymccurdy/redis-py/) - Python library for communication with [Redis server (4.0.11)](https://redis.io/) which is used as a database, cache and message broker
 
 ## Currency conversion API
 Program use the last version of [this](https://free.currencyconverterapi.com/) API. All supported currencies could be found on [this page](https://free.currencyconverterapi.com/api/v6/currencies).
@@ -179,7 +179,7 @@ GET /currency_converter?amount=10.92&input_currency=£ HTTP/1.1
 
 ## Bugs/Requests
 
-Please use the `GitHub issue tracker <https://github.com/OriginalUtkin/Currency-Converter/issues>`_ to submit bugs or request features.
+Please use the [GitHub issue tracker](https://github.com/OriginalUtkin/Currency-Converter/issues)  to submit bugs or request features.
 
 
 ## Known issues
