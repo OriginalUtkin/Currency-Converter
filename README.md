@@ -177,6 +177,11 @@ GET /currency_converter?amount=10.92&input_currency=£ HTTP/1.1
 }
 ```
 
+## Bugs/Requests
+
+Please use the `GitHub issue tracker <https://github.com/OriginalUtkin/Currency-Converter/issues>`_ to submit bugs or request features.
+
+
 ## Known issues
 The free version of [FreeCurencyAPI](https://free.currencyconverterapi.com/) allows you to send just 100 requests per hour. After that you are getting a HTTP response from server with 403 : Forbidden error code.  You have to wait for some time for sending another requests to server. This problem could be solved with buying a premium version of this service.
 
