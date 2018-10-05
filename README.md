@@ -188,4 +188,4 @@ The free version of [FreeCurencyAPI](https://free.currencyconverterapi.com/) all
  ## TODO
  - offline conversion
  - save output data to local machine using CLI version of program
- - logging  (?)
+ - Loss of accuracy using float function
