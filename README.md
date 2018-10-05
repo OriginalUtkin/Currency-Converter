@@ -179,7 +179,7 @@ GET /currency_converter?amount=10.92&input_currency=£ HTTP/1.1
 
 ## Bugs/Requests
 
-Please use the `GitHub issue tracker <https://github.com/OriginalUtkin/Currency-Converter/issues>`_ to submit bugs or request features.
+Please use the [GitHub issue tracker](https://github.com/OriginalUtkin/Currency-Converter/issues)  to submit bugs or request features.
 
 
 ## Known issues
