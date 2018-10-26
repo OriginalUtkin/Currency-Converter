@@ -1,9 +1,9 @@
 import argparse
 import math
-import constants
 import redis
 import logging
 import requests
+from sample import constants
 
 logging.basicConfig(filename="debug.log", level=logging.INFO, format=constants.logger_format)
 core_logger = logging.getLogger("Core logger")

@@ -1,6 +1,6 @@
-import core
 import argparse
 import json
+from sample import core
 
 
 def parse_args():

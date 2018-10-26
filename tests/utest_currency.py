@@ -1,6 +1,6 @@
 import unittest
 import argparse
-from core import validate_currency, get_currencies_by_symbol
+from sample.core import validate_currency, get_currencies_by_symbol
 
 
 class ValidatingCurrencyTest(unittest.TestCase):

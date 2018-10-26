@@ -1,7 +1,7 @@
-import core
 import argparse
 import urllib.error
 from flask import Flask, request, jsonify
+from sample import core
 
 app = Flask(__name__)
 
