@@ -1,10 +1,9 @@
 import argparse
 import math
-import urllib.request
-import json
 import constants
 import redis
 import logging
+import requests
 
 logging.basicConfig(filename="debug.log", level=logging.INFO, format=constants.logger_format)
 core_logger = logging.getLogger("Core logger")
@@ -19,9 +18,7 @@ def get_name_symb(empty_value_flag):
     :param empty_value_flag: if a flag is set to true, currencies without currencies symbol will be added to result list
     :return: dictionary with following structure [currency code]:[currency symbol]
     """
-
-    with urllib.request.urlopen(constants.currencies_list_addr) as json_data:
-        all_currencies = json.load(json_data)
+    all_currencies = requests.get(constants.currencies_list_addr).json()
 
     for currency in all_currencies.values():
         if empty_value_flag:
@@ -97,6 +94,7 @@ def parse_converted_value(json_response):
     :param json_response: received json response from server
     :return:currency name and currency rate
     """
+
     for key, value in json_response.items():
         return key[4:7], float(value['val'])
 
@@ -139,7 +137,7 @@ def get_cached_key(input_curr, output_curr):
     :param output_curr: output currency code (3 letters name)
     :return: prepared string db key
     """
-    return "{0}_{1}".format(input_curr, output_curr)
+    return f"{input_curr}_{output_curr}"
 
 
 def api_request(input_curr, output_curr):
@@ -149,9 +147,13 @@ def api_request(input_curr, output_curr):
     :param output_curr: output currency code
     :return: currency rate represented by float
     """
-    with urllib.request.urlopen(constants.converting_request.format(input_curr, output_curr)) as json_response:
-        converted_result = parse_converted_value(json.load(json_response))
 
+    response = requests.get(constants.converting_request, params={'q': f'{input_curr}_{output_curr}',
+                                                                  'compact': 'y'})
+
+    converted_result = parse_converted_value(response.json())
+
+    # returns just number value without a currency code
     return converted_result[1]
 
 
